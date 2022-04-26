@@ -28,6 +28,7 @@
         <spring-boot.version>2.4.3</spring-boot.version>
         <curator.version>4.0.1</curator.version>
         <zookeeper.version>3.4.10</zookeeper.version>
+        <kafka.version>2.5.0</kafka.version>
 
         <framework.common.version>1.0-SNAPSHOT</framework.common.version>
         <framework.minio.version>1.0-SNAPSHOT</framework.minio.version>
@@ -86,6 +87,19 @@
             <artifactId>commons-collections4</artifactId>
             <version>${apache.commons-collection.version}</version>
         </dependency>
+
+        <!-- reactor maven -->
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>${java.validation.version}</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -124,13 +138,6 @@
                 <version>${framework.exception.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>javax.validation</groupId>
-                <artifactId>validation-api</artifactId>
-                <version>${java.validation.version}</version>
-                <scope>compile</scope>
-            </dependency>
-
             <!-- etcd -->
             <dependency>
                 <groupId>io.etcd</groupId>
@@ -146,6 +153,13 @@
                         <artifactId>gson</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+
+            <!-- kafka -->
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>kafka-clients</artifactId>
+                <version>${kafka.version}</version>
             </dependency>
 
             <!-- elastic-job -->
