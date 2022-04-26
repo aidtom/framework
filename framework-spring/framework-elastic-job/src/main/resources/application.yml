@@ -1,0 +1,22 @@
+# 收敛分钟
+convergence:
+  enable: true
+  elastic-job:
+    properties:
+      minConvergenceScheduler:
+        job-name: "minConvergenceScheduler"
+        cron: "0 0/1 * * * ?"
+        sharding-total: 2
+schedule:
+  sharding-job:
+    mode: elastic-job
+elastic-job:
+  zookeeper:
+    cluster: loadJobZk
+zookeeper:
+  clusters:
+    loadJobZk:
+      url: mdczookee.zk.jddb.com:2181
+      namespace: mdc/analysis
+      max-retries: 3
+      base-retry-sleep-time: 5000

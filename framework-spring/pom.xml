@@ -18,6 +18,9 @@
     <modules>
         <module>framework-minio</module>
         <module>framework-exception</module>
+        <module>framework-threadpool</module>
+        <module>framework-elastic-job</module>
+        <module>framework-zookeeper</module>
     </modules>
 
     <properties>

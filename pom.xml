@@ -26,9 +26,14 @@
         <java.validation.version>2.0.1.Final</java.validation.version>
         <elastic-job.version>2.1.5</elastic-job.version>
         <spring-boot.version>2.4.3</spring-boot.version>
+        <curator.version>4.0.1</curator.version>
+        <zookeeper.version>3.4.10</zookeeper.version>
 
         <framework.common.version>1.0-SNAPSHOT</framework.common.version>
         <framework.minio.version>1.0-SNAPSHOT</framework.minio.version>
+        <framework.zookeeper.version>1.0-SNAPSHOT</framework.zookeeper.version>
+        <framework.threadpool.version>1.0-SNAPSHOT</framework.threadpool.version>
+        <framework.exception.version>1.0-SNAPSHOT</framework.exception.version>
     </properties>
 
     <dependencies>
@@ -68,12 +73,14 @@
             <version>${apache.text.version}</version>
         </dependency>
 
+        <!-- apache lang3 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${apache.commons.lang3}</version>
         </dependency>
 
+        <!-- apache collections4 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
@@ -94,6 +101,27 @@
                 <groupId>com.aidtom</groupId>
                 <artifactId>framework-minio</artifactId>
                 <version>${framework.minio.version}</version>
+            </dependency>
+
+            <!-- zookeeper -->
+            <dependency>
+                <groupId>com.aidtom</groupId>
+                <artifactId>framework-zookeeper</artifactId>
+                <version>${framework.zookeeper.version}</version>
+            </dependency>
+
+            <!-- threadpool -->
+            <dependency>
+                <groupId>com.aidtom</groupId>
+                <artifactId>framework-threadpool</artifactId>
+                <version>${framework.threadpool.version}</version>
+            </dependency>
+
+            <!-- exception -->
+            <dependency>
+                <groupId>com.aidtom</groupId>
+                <artifactId>framework-exception</artifactId>
+                <version>${framework.exception.version}</version>
             </dependency>
 
             <dependency>
@@ -172,6 +200,28 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-aop</artifactId>
                 <version>${spring-boot.version}</version>
+            </dependency>
+
+            <!-- zookeeper -->
+            <dependency>
+                <groupId>org.apache.zookeeper</groupId>
+                <artifactId>zookeeper</artifactId>
+                <version>${zookeeper.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-framework</artifactId>
+                <version>${curator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-recipes</artifactId>
+                <version>${curator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-client</artifactId>
+                <version>${curator.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
