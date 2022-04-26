@@ -2,15 +2,21 @@ package com.aidtom.framework.minio.core;
 
 import com.aidtom.framework.minio.MinioAutoProperties;
 import io.minio.*;
+import io.minio.errors.*;
+import io.minio.http.Method;
 import io.minio.messages.Bucket;
 import io.minio.messages.Item;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.*;
 import java.net.URL;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -23,12 +29,31 @@ import java.util.Optional;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class MinioCoreImpl implements MinioCore {
-    @Resource
-    private MinioClient minioClient;
+    //@Resource
+    private final MinioClient minioClient;
 
-    @Resource
-    private MinioAutoProperties minioAutoProperties;
+    //@Resource
+    private final MinioAutoProperties minioAutoProperties;
+
+    /**
+     * 桶占位符
+     */
+    private static final String BUCKET_PARAM = "${bucket}";
+    /**
+     * bucket权限-只读
+     */
+    private static final String READ_ONLY = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Action\":[\"s3:GetBucketLocation\",\"s3:ListBucket\"],\"Resource\":[\"arn:aws:s3:::" + BUCKET_PARAM + "\"]},{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Action\":[\"s3:GetObject\"],\"Resource\":[\"arn:aws:s3:::" + BUCKET_PARAM + "/*\"]}]}";
+    /**
+     * bucket权限-只写
+     */
+    private static final String WRITE_ONLY = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Action\":[\"s3:GetBucketLocation\",\"s3:ListBucketMultipartUploads\"],\"Resource\":[\"arn:aws:s3:::" + BUCKET_PARAM + "\"]},{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Action\":[\"s3:AbortMultipartUpload\",\"s3:DeleteObject\",\"s3:ListMultipartUploadParts\",\"s3:PutObject\"],\"Resource\":[\"arn:aws:s3:::" + BUCKET_PARAM + "/*\"]}]}";
+    /**
+     * bucket权限-读写
+     */
+    private static final String READ_WRITE = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Action\":[\"s3:GetBucketLocation\",\"s3:ListBucket\",\"s3:ListBucketMultipartUploads\"],\"Resource\":[\"arn:aws:s3:::" + BUCKET_PARAM + "\"]},{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Action\":[\"s3:DeleteObject\",\"s3:GetObject\",\"s3:ListMultipartUploadParts\",\"s3:PutObject\",\"s3:AbortMultipartUpload\"],\"Resource\":[\"arn:aws:s3:::" + BUCKET_PARAM + "/*\"]}]}";
+
 
     @Override
     public Boolean bucketExists(String bucketName) {
@@ -76,6 +101,29 @@ public class MinioCoreImpl implements MinioCore {
         this.putBytes(minioAutoProperties.getBucket(), fileName, bytes, contentType);
         return minioAutoProperties.getUrl() + "/" + minioAutoProperties.getBucket() + "/" + fileName;
     }
+
+    @Override
+    public void putBucketPolicy(String bucket, String policy) {
+        try {
+            switch (policy) {
+                case "read-only":
+                    minioClient.setBucketPolicy(SetBucketPolicyArgs.builder().bucket(bucket).config(READ_ONLY.replace(BUCKET_PARAM, bucket)).build());
+                    break;
+                case "write-only":
+                    minioClient.setBucketPolicy(SetBucketPolicyArgs.builder().bucket(bucket).config(WRITE_ONLY.replace(BUCKET_PARAM, bucket)).build());
+                    break;
+                case "read-write":
+                    minioClient.setBucketPolicy(SetBucketPolicyArgs.builder().bucket(bucket).config(READ_WRITE.replace(BUCKET_PARAM, bucket)).build());
+                    break;
+                default:
+                    break;
+            }
+        } catch (Exception e) {
+            log.error("putBucketPolicy error. ", e);
+            throw new RuntimeException("设置桶策略失败");
+        }
+    }
+
 
     @Override
     public String putObject(String objectName, MultipartFile file) {
@@ -205,6 +253,20 @@ public class MinioCoreImpl implements MinioCore {
         } catch (IOException e) {
             throw new RuntimeException("根据URL获取流失败!", e);
         }
+    }
+
+    @Override
+    public String getSignedUrl(String bucket, String objectKey, int expires) {
+        String signedObjectUrl = StringUtils.EMPTY;
+        try {
+            signedObjectUrl = minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
+                    .method(Method.GET).bucket(bucket)
+                    .object(objectKey).expiry(expires)
+                    .build());
+        } catch (Exception e) {
+            log.error("getSignedUrl error. ", e);
+        }
+        return signedObjectUrl;
     }
 
     @Override

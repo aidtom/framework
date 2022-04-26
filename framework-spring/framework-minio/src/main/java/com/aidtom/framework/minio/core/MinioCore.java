@@ -88,6 +88,14 @@ public interface MinioCore {
     String putObject(String bucketName, String objectName, MultipartFile file);
 
     /**
+     * 设置文件桶的策略
+     *
+     * @param bucket
+     * @param policy
+     */
+    void putBucketPolicy(String bucket, String policy);
+
+    /**
      * 上传流到指定的文件桶下
      *
      * @param bucketName  桶名称
@@ -178,6 +186,16 @@ public interface MinioCore {
      * @return 文件流
      */
     InputStream getObjectByUrl(String url);
+
+    /**
+     * 获取桶文件签名url
+     *
+     * @param bucket    桶
+     * @param objectKey 文件key
+     * @param expires   签名有效时间  单位秒
+     * @return 文件签名地址
+     */
+    String getSignedUrl(String bucket, String objectKey, int expires);
 
     /**
      * 获取全部bucket
