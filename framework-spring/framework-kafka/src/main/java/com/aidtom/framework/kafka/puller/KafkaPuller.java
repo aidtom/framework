@@ -21,7 +21,7 @@ import java.util.function.Function;
 /**
  * kafka消费者
  *
- * @author tanghaihua
+ * @author tom
  * @date 2020/11/25 17:35
  */
 @Data
