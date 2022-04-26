@@ -16,7 +16,7 @@ elastic-job:
 zookeeper:
   clusters:
     loadJobZk:
-      url: mdczookee.zk.jddb.com:2181
+      url: mdczookee.zk.com:2181
       namespace: mdc/analysis
       max-retries: 3
       base-retry-sleep-time: 5000
