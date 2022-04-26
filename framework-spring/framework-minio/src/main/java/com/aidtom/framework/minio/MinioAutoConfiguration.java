@@ -1,4 +1,4 @@
-package com.aidtom.minio;
+package com.aidtom.framework.minio;
 
 import io.minio.BucketExistsArgs;
 import io.minio.MakeBucketArgs;

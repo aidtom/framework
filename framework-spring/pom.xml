@@ -17,6 +17,7 @@
 
     <modules>
         <module>framework-minio</module>
+        <module>framework-exception</module>
     </modules>
 
     <properties>

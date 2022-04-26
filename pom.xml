@@ -26,6 +26,9 @@
         <java.validation.version>2.0.1.Final</java.validation.version>
         <elastic-job.version>2.1.5</elastic-job.version>
         <spring-boot.version>2.4.3</spring-boot.version>
+
+        <framework.common.version>1.0-SNAPSHOT</framework.common.version>
+        <framework.minio.version>1.0-SNAPSHOT</framework.minio.version>
     </properties>
 
     <dependencies>
@@ -80,6 +83,19 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- 基础包 -->
+            <dependency>
+                <groupId>com.aidtom</groupId>
+                <artifactId>framework-common</artifactId>
+                <version>${framework.common.version}</version>
+            </dependency>
+            <!-- minio -->
+            <dependency>
+                <groupId>com.aidtom</groupId>
+                <artifactId>framework-minio</artifactId>
+                <version>${framework.minio.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>javax.validation</groupId>
                 <artifactId>validation-api</artifactId>
@@ -148,6 +164,13 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-autoconfigure</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+
+            <!-- aop -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-aop</artifactId>
                 <version>${spring-boot.version}</version>
             </dependency>
         </dependencies>

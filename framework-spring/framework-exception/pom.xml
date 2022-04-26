@@ -4,37 +4,35 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>framework</artifactId>
         <groupId>com.aidtom</groupId>
+        <artifactId>framework-spring</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
+
     <groupId>com.aidtom</groupId>
-    <artifactId>framework-common</artifactId>
-    <name>framework-common</name>
-    <description>基础核心包</description>
+    <artifactId>framework-exception</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <name>framework-exception</name>
+    <description>统一异常处理</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-
-        <disruptor.version>3.3.4</disruptor.version>
-        <hultool.version>5.3.10</hultool.version>
     </properties>
 
     <dependencies>
-        <!-- disruptor -->
+        <!-- 基础 -->
         <dependency>
-            <groupId>com.lmax</groupId>
-            <artifactId>disruptor</artifactId>
-            <version>${disruptor.version}</version>
+            <groupId>com.aidtom</groupId>
+            <artifactId>framework-common</artifactId>
         </dependency>
 
-        <!-- 工具类 -->
+        <!-- Aop切面-->
         <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-            <version>${hultool.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
     </dependencies>
 

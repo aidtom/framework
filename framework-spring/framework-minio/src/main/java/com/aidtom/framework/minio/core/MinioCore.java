@@ -1,4 +1,4 @@
-package com.aidtom.minio.core;
+package com.aidtom.framework.minio.core;
 
 import io.minio.messages.Bucket;
 import org.springframework.web.multipart.MultipartFile;

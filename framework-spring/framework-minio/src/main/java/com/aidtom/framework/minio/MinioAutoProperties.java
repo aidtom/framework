@@ -1,4 +1,4 @@
-package com.aidtom.minio;
+package com.aidtom.framework.minio;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.URL;

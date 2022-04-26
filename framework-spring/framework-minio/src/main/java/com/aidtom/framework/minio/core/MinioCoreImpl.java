@@ -1,6 +1,6 @@
-package com.aidtom.minio.core;
+package com.aidtom.framework.minio.core;
 
-import com.aidtom.minio.MinioAutoProperties;
+import com.aidtom.framework.minio.MinioAutoProperties;
 import io.minio.*;
 import io.minio.messages.Bucket;
 import io.minio.messages.Item;
