@@ -5,7 +5,7 @@ import lombok.Data;
 /**
  * 消息事件
  *
- * @author tanghaihua
+ * @author tom
  * @date 2021/6/30
  */
 @Data

@@ -9,7 +9,7 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
 import java.time.Duration;
 
 /**
- * @author tanghaihua
+ * @author tom
  */
 @Data
 public class ZookeeperClientProperties {

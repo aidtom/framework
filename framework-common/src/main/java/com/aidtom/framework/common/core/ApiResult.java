@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * 接口返回结果封装
  *
- * @author tanghaihua
+ * @author tom
  * @date 2020/11/16
  */
 @Data

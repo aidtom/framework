@@ -8,7 +8,7 @@ import lombok.Data;
 /**
  * 分钟级收配置
  *
- * @author tanghaihua
+ * @author tom
  * @date 2022/3/14
  */
 @Data

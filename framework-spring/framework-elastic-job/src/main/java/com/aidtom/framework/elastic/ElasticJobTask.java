@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 /**
- * @author tanghaihua
+ * @author tom
  */
 @Data
 @RequiredArgsConstructor(staticName = "of")

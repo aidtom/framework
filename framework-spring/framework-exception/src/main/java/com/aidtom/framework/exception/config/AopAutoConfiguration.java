@@ -8,7 +8,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 /**
  * 保留类，如果控制器需要些aop在这里写
  *
- * @author tanghaihua
+ * @author tom
  * @date 2020/11/25 17:35
  */
 @Configuration

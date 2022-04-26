@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * kafka
  *
- * @author tanghaihua
+ * @author tom
  * @date 2020/11/25 17:35
  */
 @RequiredArgsConstructor

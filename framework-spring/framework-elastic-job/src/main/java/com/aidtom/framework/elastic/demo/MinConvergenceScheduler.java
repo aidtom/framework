@@ -12,7 +12,7 @@ import javax.annotation.Resource;
 /**
  * 分钟收敛
  *
- * @author tanghaihua
+ * @author tom
  * @date 2022/3/11
  */
 

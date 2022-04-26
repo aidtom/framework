@@ -1,7 +1,7 @@
 package com.aidtom.framework.elastic;
 
 /**
- * @author tanghaihua
+ * @author tom
  */
 public interface ElasticJobExecutor {
 

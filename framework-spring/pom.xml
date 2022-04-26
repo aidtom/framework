@@ -22,6 +22,7 @@
         <module>framework-elastic-job</module>
         <module>framework-zookeeper</module>
         <module>framework-kafka</module>
+        <module>framework-etcd</module>
     </modules>
 
     <properties>

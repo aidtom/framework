@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 /**
  * 线程池配置
  *
- * @author tanghaihua
+ * @author tom
  * @date 2022/3/23
  */
 @Data

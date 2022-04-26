@@ -9,7 +9,7 @@ import com.lmax.disruptor.EventFactory;
  * 先从 RingBuffer 获得一个 Event 的实例，然后往 Event 实例中填充数据，之后再发布到 RingBuffer 中，
  * 之后由 Consumer 获得该 Event 实例并从中读取数据
  *
- * @author tanghaihua
+ * @author tom
  * @date 2021/6/30
  */
 public class MessageEventFactory <T> implements EventFactory<MessageEvent<T>> {

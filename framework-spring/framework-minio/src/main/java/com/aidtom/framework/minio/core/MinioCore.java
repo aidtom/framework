@@ -11,7 +11,7 @@ import java.util.Optional;
 /**
  * minio core
  *
- * @author tanghaihua
+ * @author tom
  * @date 2022/4/26
  */
 public interface MinioCore {

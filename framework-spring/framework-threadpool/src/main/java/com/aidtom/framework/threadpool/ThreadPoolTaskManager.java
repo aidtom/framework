@@ -11,7 +11,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 /**
  * 初始化线程
  *
- * @author tanghaihua
+ * @author tom
  * @date 2022/3/23
  */
 @Data

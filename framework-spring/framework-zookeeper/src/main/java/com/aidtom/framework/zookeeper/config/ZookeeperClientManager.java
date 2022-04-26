@@ -3,7 +3,7 @@ package com.aidtom.framework.zookeeper.config;
 import org.apache.curator.framework.CuratorFramework;
 
 /**
- * @author tanghaihua
+ * @author tom
  */
 public interface ZookeeperClientManager {
 

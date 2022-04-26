@@ -6,7 +6,7 @@ import com.lmax.disruptor.WorkHandler;
 /**
  * 消费者 抽象类
  *
- * @author tanghaihua
+ * @author tom
  * @date 2021/6/30
  */
 public abstract class AbstractMessageConsumer<T> implements EventHandler<MessageEvent<T>>, WorkHandler<MessageEvent<T>> {

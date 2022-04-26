@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 /**
  * kafka
  *
- * @author tanghaihua
+ * @author tom
  * @date 2020/11/25 17:35
  */
 public class KafkaConfig extends HashMap<String, Object> {

@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 /**
  * Minio 自动配置
  *
- * @author tanghaihua
+ * @author tom
  * @date 2021/4/26
  */
 @Slf4j

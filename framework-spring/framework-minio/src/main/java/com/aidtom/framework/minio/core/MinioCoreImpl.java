@@ -18,7 +18,7 @@ import java.util.Optional;
 /**
  * Minio core 实现
  *
- * @author tanghaihua
+ * @author tom
  * @date 2022/4/26
  */
 @Slf4j

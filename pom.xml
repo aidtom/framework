@@ -153,6 +153,23 @@
                 <version>${elastic-job.version}</version>
             </dependency>
 
+            <!-- etcd -->
+            <dependency>
+                <groupId>io.etcd</groupId>
+                <artifactId>jetcd-core</artifactId>
+                <version>${etcd.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>io.netty</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.google.code.gson</groupId>
+                        <artifactId>gson</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
             <!-- spring boot -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>

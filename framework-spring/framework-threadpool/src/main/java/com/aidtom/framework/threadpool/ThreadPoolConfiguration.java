@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * 线程池管理类
  *
- * @author tanghaihua
+ * @author tom
  * @date 2022/3/23
  */
 @Configuration

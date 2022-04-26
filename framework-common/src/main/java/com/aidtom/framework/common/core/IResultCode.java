@@ -4,7 +4,7 @@ package com.aidtom.framework.common.core;
  * 系统异常码枚举基础接口
  * 各个子模块中定义的异常码枚举需实现该接口
  *
- * @author tanghaihua
+ * @author tom
  * @date 2020/11/25 16:25
  */
 

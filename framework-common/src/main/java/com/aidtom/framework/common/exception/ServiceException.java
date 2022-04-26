@@ -5,7 +5,7 @@ import com.aidtom.framework.common.core.IResultCode;
 /**
  * 业务类service异常类，所有的业务类抛此异常
  *
- * @author tanghaihua
+ * @author tom
  * @date 2020/11/25 17:35
  */
 public class ServiceException extends RuntimeException {
