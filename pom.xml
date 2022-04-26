@@ -6,8 +6,10 @@
 
     <groupId>com.aidtom</groupId>
     <artifactId>framework</artifactId>
-    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+
+    <packaging>pom</packaging>
+
     <modules>
         <module>framework-common</module>
         <module>framework-spring</module>
@@ -88,12 +90,6 @@
             <version>${apache.commons-collection.version}</version>
         </dependency>
 
-        <!-- reactor maven -->
-        <dependency>
-            <groupId>io.projectreactor</groupId>
-            <artifactId>reactor-core</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
@@ -136,23 +132,6 @@
                 <groupId>com.aidtom</groupId>
                 <artifactId>framework-exception</artifactId>
                 <version>${framework.exception.version}</version>
-            </dependency>
-
-            <!-- etcd -->
-            <dependency>
-                <groupId>io.etcd</groupId>
-                <artifactId>jetcd-core</artifactId>
-                <version>${etcd.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>io.netty</groupId>
-                        <artifactId>*</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.google.code.gson</groupId>
-                        <artifactId>gson</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <!-- kafka -->
