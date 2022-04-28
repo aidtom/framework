@@ -99,10 +99,12 @@ public class App {
         /*Map<String, String> map = minioCore.removeObjects("test1", objectNames);
         System.out.println(map);*/
 
-        List<ObjectItem> test = minioCore.getBucketObjects("test", "", "介绍.pdf", null);
+/*        List<ObjectItem> test = minioCore.getBucketObjects("test", "", "介绍.pdf", null);
         Optional.ofNullable(test).orElse(Collections.emptyList()).forEach(objectItem -> {
             System.out.println(objectItem);
-        });
+        });*/
+
+        minioCore.setObjectRetention("test", "20.jpg", 1);
 
     }
 

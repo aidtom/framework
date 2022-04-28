@@ -19,6 +19,7 @@ import java.io.*;
 import java.net.URL;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -205,6 +206,22 @@ public class MinioCoreImpl implements MinioCore {
             throw new RuntimeException("设置对象标签异常", e);
         }
     }
+
+    @Override
+    public void setObjectRetention(String bucketName, String objectName, long hour) {
+        try {
+            Retention retention = new Retention(RetentionMode.COMPLIANCE, ZonedDateTime.now().plusHours(hour));
+            minioClient.setObjectRetention(SetObjectRetentionArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .config(retention)
+                    .bypassGovernanceMode(true)
+                    .build());
+        } catch (Exception e) {
+            throw new RuntimeException("设置对象保留异常.", e);
+        }
+    }
+
 
     @Override
     public Boolean checkFileIsExist(String objectName) {
@@ -419,6 +436,24 @@ public class MinioCoreImpl implements MinioCore {
         return errorMap;
     }
 
+    @Override
+    public void deleteBucketTags(String bucketName) {
+        try {
+            minioClient.deleteBucketTags(DeleteBucketTagsArgs.builder().bucket(bucketName).build());
+        } catch (Exception e) {
+            throw new RuntimeException("删除桶标签异常.", e);
+        }
+    }
+
+    @Override
+    public void deleteObjectTags(String bucketName, String objectName) {
+        try {
+            minioClient.deleteObjectTags(DeleteObjectTagsArgs.builder().bucket(bucketName).object(objectName).build());
+        } catch (Exception e) {
+            throw new RuntimeException("删除对象文件标签异常.", e);
+        }
+    }
+
     /**
      * 上传MultipartFile通用方法
      *
@@ -427,7 +462,7 @@ public class MinioCoreImpl implements MinioCore {
      * @param file       文件
      */
     private void putMultipartFile(String bucketName, String objectName, MultipartFile file) {
-        InputStream inputStream = null;
+        InputStream inputStream;
         try {
             inputStream = file.getInputStream();
         } catch (IOException e) {

@@ -142,10 +142,20 @@ public interface MinioCore {
     /**
      * 设置桶里文件对象标签
      *
-     * @param bucket
+     * @param bucketName
      * @param tags
      */
-    void putObjectTags(String bucket, String objectName, Map<String, String> tags);
+    void putObjectTags(String bucketName, String objectName, Map<String, String> tags);
+
+    /**
+     * 设置对象保留配置
+     * 合规模式 COMPLIANCE :防止任何会改变或修改对象或其锁定设置的操作。 没有 MinIO 用户可以修改对象或其设置，包括 MinIO root用户。在配置的保留规则持续时间过后，MinIO 会自动解除锁定
+     * 治理模式 GOVERNANCE :防止非特权用户进行任何会改变或修改对象或其锁定设置的操作。拥有存储桶或对象权限的用户s3:BypassGovernanceRetention可以修改对象或其锁定设置。在配置的保留规则持续时间过后，MinIO 会自动解除锁定。
+     *
+     * @param bucketName
+     * @param objectName
+     */
+    void setObjectRetention(String bucketName, String objectName, long hour);
 
     /**
      * 判断文件是否存在
@@ -297,4 +307,19 @@ public interface MinioCore {
      * @return 删除成功，返回值为空，否则输出删除失败的文件对象
      */
     Map<String, String> removeObjects(String bucketName, List<String> objectNames);
+
+    /**
+     * 删除桶标签
+     *
+     * @param bucketName
+     */
+    void deleteBucketTags(String bucketName);
+
+    /**
+     * 删除对象文件标签
+     *
+     * @param bucketName
+     * @param objectName
+     */
+    void deleteObjectTags(String bucketName, String objectName);
 }
