@@ -2,6 +2,7 @@ package com.aidtom.framework.minio.core.model;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
 import java.time.ZonedDateTime;
@@ -13,6 +14,7 @@ import java.util.Map;
  * @author tanghaihua
  * @date 2022/4/27
  */
+@ToString
 @Builder
 @Data
 @Accessors(chain = true)

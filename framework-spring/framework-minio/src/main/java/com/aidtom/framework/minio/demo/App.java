@@ -28,9 +28,9 @@ public class App {
 
     static {
         minioAutoProperties = new MinioAutoProperties();
-        minioAutoProperties.setUrl("http://heimdallanalysis-miniorpc.mdc3.svc.lf4.n.jd.local");
-        minioAutoProperties.setAccessKey("admin");
-        minioAutoProperties.setSecretKey("admin123456");
+        minioAutoProperties.setUrl("http://mdc-inspection-minrpc.mdc3.svc.ht06.n.jd.local");
+        minioAutoProperties.setAccessKey("minioadmin");
+        minioAutoProperties.setSecretKey("minioadmin");
         minioAutoProperties.setBucket("test1");
 
         log.info("开始初始化MinioClient, url为{}, accessKey为:{}", minioAutoProperties.getUrl(), minioAutoProperties.getAccessKey());
@@ -104,8 +104,10 @@ public class App {
             System.out.println(objectItem);
         });*/
 
-        minioCore.setObjectRetention("test", "20.jpg", 1);
-
+        List<ObjectItem> test = minioCore.getBucketObjects("test", "", "pptx", 1000);
+        Optional.ofNullable(test).orElse(Collections.emptyList()).forEach(objectItem -> {
+            System.out.println(objectItem.toString());
+        });
     }
 
 
