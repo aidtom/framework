@@ -3,10 +3,17 @@ package com.aidtom.framework.minio.demo;
 import com.aidtom.framework.minio.MinioAutoProperties;
 import com.aidtom.framework.minio.core.MinioCore;
 import com.aidtom.framework.minio.core.MinioCoreImpl;
+import com.aidtom.framework.minio.core.model.ObjectInfo;
+import com.aidtom.framework.minio.core.model.ObjectItem;
 import io.minio.BucketExistsArgs;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
+import io.minio.StatObjectResponse;
+import io.minio.messages.Bucket;
 import lombok.extern.slf4j.Slf4j;
+
+import javax.crypto.spec.OAEPParameterSpec;
+import java.util.*;
 
 /**
  * demo
@@ -18,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 public class App {
     private static MinioClient minioClient;
     private static MinioAutoProperties minioAutoProperties;
+
     static {
         minioAutoProperties = new MinioAutoProperties();
         minioAutoProperties.setUrl("http://heimdallanalysis-miniorpc.mdc3.svc.lf4.n.jd.local");
@@ -57,9 +65,44 @@ public class App {
 
     public static void main(String[] args) {
         MinioCore minioCore = new MinioCoreImpl(minioClient, minioAutoProperties);
-        //String url = minioCore.getSignedUrl("test", "21.jpg", 60);
-        //System.out.println(url);
-        minioCore.putBucketPolicy("test3", "write-only");
+
+/*        List<Bucket> allBuckets = minioCore.getAllBuckets();
+        Optional.ofNullable(allBuckets).orElse(Collections.emptyList()).forEach(bucket -> {
+            System.out.println(bucket.name() + ",createTime = " + bucket.creationDate());
+        });*/
+
+        /*Map<String, String> tags = new HashMap<>();
+        tags.put("test", "测试");
+        tags.put("book", "书");
+        tags.put("sec", "安全");
+
+        minioCore.putBucketTags("test1", tags);*/
+
+        /*Map<String, String> test1 = minioCore.getBucketTags("test1");
+        System.out.println(test1);*/
+        Map<String, String> tags = new HashMap<>();
+        tags.put("test1", "测试");
+        tags.put("pic", "图片");
+
+        //minioCore.putObjectTags("test1", "21_1650943870473.jpg", tags);
+
+/*        Map<String, String> test1 = minioCore.getObjectTags("test1", "21_1650943870473.jpg");
+        System.out.println(test1);*/
+
+        /*ObjectInfo test1 = minioCore.getObjectInfo("test1", "21_1650943870473.jpg");
+
+        System.out.println(test1.toString());*/
+        /*List<String> objectNames = new ArrayList<>();
+        objectNames.add("21_1650943870473.jpg");
+        objectNames.add("MDC3.0-介绍_1650941412572.pdf");*/
+
+        /*Map<String, String> map = minioCore.removeObjects("test1", objectNames);
+        System.out.println(map);*/
+
+        List<ObjectItem> test = minioCore.getBucketObjects("test", "", "介绍.pdf", null);
+        Optional.ofNullable(test).orElse(Collections.emptyList()).forEach(objectItem -> {
+            System.out.println(objectItem);
+        });
 
     }
 

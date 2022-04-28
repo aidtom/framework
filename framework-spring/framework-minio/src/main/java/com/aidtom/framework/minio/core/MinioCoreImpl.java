@@ -1,11 +1,13 @@
 package com.aidtom.framework.minio.core;
 
 import com.aidtom.framework.minio.MinioAutoProperties;
+import com.aidtom.framework.minio.core.model.ObjectInfo;
+import com.aidtom.framework.minio.core.model.ObjectItem;
+import com.google.common.collect.Maps;
 import io.minio.*;
 import io.minio.errors.*;
 import io.minio.http.Method;
-import io.minio.messages.Bucket;
-import io.minio.messages.Item;
+import io.minio.messages.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -17,9 +19,8 @@ import java.io.*;
 import java.net.URL;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Minio core 实现
@@ -124,6 +125,14 @@ public class MinioCoreImpl implements MinioCore {
         }
     }
 
+    @Override
+    public void putBucketTags(String bucket, Map<String, String> tags) {
+        try {
+            minioClient.setBucketTags(SetBucketTagsArgs.builder().bucket(bucket).tags(tags).build());
+        } catch (Exception e) {
+            throw new RuntimeException("设置桶标签异常", e);
+        }
+    }
 
     @Override
     public String putObject(String objectName, MultipartFile file) {
@@ -185,6 +194,16 @@ public class MinioCoreImpl implements MinioCore {
         // 开始上传
         this.putFile(bucketName, fileName, file, contentType);
         return minioAutoProperties.getUrl() + "/" + bucketName + "/" + fileName;
+    }
+
+    @Override
+    public void putObjectTags(String bucket, String objectName, Map<String, String> tags) {
+        try {
+            minioClient.setObjectTags(SetObjectTagsArgs.builder().bucket(bucket).object(objectName).tags(tags).build());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("设置对象标签异常", e);
+        }
     }
 
     @Override
@@ -257,16 +276,55 @@ public class MinioCoreImpl implements MinioCore {
 
     @Override
     public String getSignedUrl(String bucket, String objectKey, int expires) {
-        String signedObjectUrl = StringUtils.EMPTY;
         try {
-            signedObjectUrl = minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
+            return minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
                     .method(Method.GET).bucket(bucket)
                     .object(objectKey).expiry(expires)
                     .build());
         } catch (Exception e) {
-            log.error("getSignedUrl error. ", e);
+            throw new RuntimeException("获取签名文件Url异常.", e);
         }
-        return signedObjectUrl;
+    }
+
+    @Override
+    public ObjectInfo getObjectInfo(String bucket, String object) {
+        try {
+            StatObjectResponse statObjectResponse = minioClient.statObject(StatObjectArgs.builder().bucket(bucket).object(object).build());
+            if (statObjectResponse != null) {
+                return ObjectInfo.builder().bucket(statObjectResponse.bucket())
+                        .object(statObjectResponse.object())
+                        .objectSize(statObjectResponse.size())
+                        .etag(statObjectResponse.etag())
+                        .contentType(statObjectResponse.contentType())
+                        .userMetadata(statObjectResponse.userMetadata())
+                        .lastModifiedTime(statObjectResponse.lastModified())
+                        .build();
+            } else {
+                return ObjectInfo.builder().build();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("获取对象信息异常.", e);
+        }
+    }
+
+    @Override
+    public Map<String, String> getObjectTags(String bucket, String object) {
+        try {
+            Tags objectTags = minioClient.getObjectTags(GetObjectTagsArgs.builder().bucket(bucket).object(object).build());
+            return objectTags.get();
+        } catch (Exception e) {
+            throw new RuntimeException("获取对象标签异常", e);
+        }
+    }
+
+    @Override
+    public Map<String, String> getBucketTags(String bucket) {
+        try {
+            Tags bucketTags = minioClient.getBucketTags(GetBucketTagsArgs.builder().bucket(bucket).build());
+            return bucketTags.get();
+        } catch (Exception e) {
+            throw new RuntimeException("获取桶标签异常", e);
+        }
     }
 
     @Override
@@ -276,6 +334,37 @@ public class MinioCoreImpl implements MinioCore {
         } catch (Exception e) {
             throw new RuntimeException("获取全部存储桶失败!", e);
         }
+    }
+
+    @Override
+    public List<ObjectItem> getBucketObjects(String bucketName, String prefix, String startAfter, Integer max) {
+        ListObjectsArgs.Builder bucket = ListObjectsArgs.builder().bucket(bucketName);
+        if (StringUtils.isNotBlank(prefix)) {
+            bucket.prefix(prefix);
+        }
+        if (StringUtils.isNotBlank(startAfter)) {
+            bucket.startAfter(startAfter);
+        }
+        if (max != null) {
+            bucket.maxKeys(max);
+        }
+
+        List<ObjectItem> objectItems = new ArrayList<>();
+        Iterable<Result<Item>> results = minioClient.listObjects(bucket.build());
+        Optional.ofNullable(results).orElse(Collections.emptyList()).forEach(itemResult -> {
+            try {
+                Item item = itemResult.get();
+                ObjectItem build = ObjectItem.builder().objectName(item.objectName())
+                        .objectSize(item.size())
+                        .lastModified(item.lastModified())
+                        .userMetadata(item.userMetadata())
+                        .build();
+                objectItems.add(build);
+            } catch (Exception e) {
+                log.error("getBucketObjects error. ", e);
+            }
+        });
+        return objectItems;
     }
 
     @Override
@@ -308,6 +397,26 @@ public class MinioCoreImpl implements MinioCore {
         } catch (Exception e) {
             throw new RuntimeException("删除文件失败!", e);
         }
+    }
+
+    @Override
+    public Map<String, String> removeObjects(String bucketName, List<String> objectNames) {
+        Map<String, String> errorMap = Maps.newHashMap();
+
+        List<DeleteObject> objects = Optional.ofNullable(objectNames).orElse(Collections.emptyList()).stream()
+                .map(objectName -> new DeleteObject(objectName))
+                .collect(Collectors.toList());
+
+        Iterable<Result<DeleteError>> results = minioClient.removeObjects(RemoveObjectsArgs.builder().bucket(bucketName).objects(objects).build());
+        Optional.ofNullable(results).orElse(Collections.emptyList()).forEach(deleteErrorResult -> {
+            try {
+                DeleteError error = deleteErrorResult.get();
+                errorMap.putIfAbsent(error.objectName(), error.message());
+            } catch (Exception e) {
+                log.error("removeObjects error. ", e);
+            }
+        });
+        return errorMap;
     }
 
     /**
