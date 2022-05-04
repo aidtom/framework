@@ -3,6 +3,7 @@ package com.aidtom.framework.minio.core;
 import com.aidtom.framework.minio.core.model.ObjectInfo;
 import com.aidtom.framework.minio.core.model.ObjectItem;
 import io.minio.messages.Bucket;
+import io.minio.messages.SseConfiguration;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -158,6 +159,13 @@ public interface MinioCore {
     void setObjectRetention(String bucketName, String objectName, long hour);
 
     /**
+     * 设置存储桶的加密配置
+     *
+     * @param bucketName
+     */
+    void setBucketEncryption(String bucketName);
+
+    /**
      * 判断文件是否存在
      *
      * @param objectName 文件名称, 如果要带文件夹请用 / 分割
@@ -276,6 +284,13 @@ public interface MinioCore {
      * @return 单个桶信息
      */
     Optional<Bucket> getBucket(String bucketName);
+
+    /**
+     * 获取桶的加密配置
+     *
+     * @param bucketName
+     */
+    SseConfiguration getBucketEncryption(String bucketName);
 
     /**
      * 根据bucketName删除信息

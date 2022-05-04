@@ -3,16 +3,12 @@ package com.aidtom.framework.minio.demo;
 import com.aidtom.framework.minio.MinioAutoProperties;
 import com.aidtom.framework.minio.core.MinioCore;
 import com.aidtom.framework.minio.core.MinioCoreImpl;
-import com.aidtom.framework.minio.core.model.ObjectInfo;
 import com.aidtom.framework.minio.core.model.ObjectItem;
 import io.minio.BucketExistsArgs;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
-import io.minio.StatObjectResponse;
-import io.minio.messages.Bucket;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.crypto.spec.OAEPParameterSpec;
 import java.util.*;
 
 /**
@@ -28,7 +24,7 @@ public class App {
 
     static {
         minioAutoProperties = new MinioAutoProperties();
-        minioAutoProperties.setUrl("http://mdc-inspection-minrpc.mdc3.svc.ht06.n.jd.local");
+        minioAutoProperties.setUrl("http://heimdalladapter-miniorpc.mdc3.svc.lf7.n.jd.local");
         minioAutoProperties.setAccessKey("minioadmin");
         minioAutoProperties.setSecretKey("minioadmin");
         minioAutoProperties.setBucket("test1");
@@ -104,10 +100,13 @@ public class App {
             System.out.println(objectItem);
         });*/
 
-        List<ObjectItem> test = minioCore.getBucketObjects("test", "", "pptx", 1000);
+/*        List<ObjectItem> test = minioCore.getBucketObjects("test", "", "pptx", 1000);
         Optional.ofNullable(test).orElse(Collections.emptyList()).forEach(objectItem -> {
             System.out.println(objectItem.toString());
-        });
+        });*/
+
+        minioCore.createBucket("test3");
+        minioCore.setBucketEncryption("test3");
     }
 
 

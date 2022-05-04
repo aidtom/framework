@@ -222,6 +222,17 @@ public class MinioCoreImpl implements MinioCore {
         }
     }
 
+    @Override
+    public void setBucketEncryption(String bucketName) {
+        try {
+            minioClient.setBucketEncryption(SetBucketEncryptionArgs.builder()
+                    .bucket(bucketName)
+                    .config(SseConfiguration.newConfigWithSseS3Rule())
+                    .build());
+        } catch (Exception e) {
+            throw new RuntimeException("设置桶加密方式异常", e);
+        }
+    }
 
     @Override
     public Boolean checkFileIsExist(String objectName) {
@@ -391,6 +402,17 @@ public class MinioCoreImpl implements MinioCore {
         } catch (Exception e) {
             throw new RuntimeException("根据存储桶名称获取信息失败!", e);
         }
+    }
+
+    @Override
+    public SseConfiguration getBucketEncryption(String bucketName) {
+        SseConfiguration bucketEncryption = null;
+        try {
+            bucketEncryption = minioClient.getBucketEncryption(GetBucketEncryptionArgs.builder().bucket(bucketName).build());
+        } catch (Exception e) {
+            throw new RuntimeException("获取桶加密异常.", e);
+        }
+        return bucketEncryption;
     }
 
     @Override
