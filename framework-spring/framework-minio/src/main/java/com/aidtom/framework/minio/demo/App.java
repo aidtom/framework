@@ -24,7 +24,7 @@ public class App {
 
     static {
         minioAutoProperties = new MinioAutoProperties();
-        minioAutoProperties.setUrl("http://heimdalladapter-miniorpc.mdc3.svc.lf7.n.jd.local");
+        minioAutoProperties.setUrl("");
         minioAutoProperties.setAccessKey("minioadmin");
         minioAutoProperties.setSecretKey("minioadmin");
         minioAutoProperties.setBucket("test1");
