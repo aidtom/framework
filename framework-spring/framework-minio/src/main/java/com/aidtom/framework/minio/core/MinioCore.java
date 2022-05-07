@@ -233,14 +233,37 @@ public interface MinioCore {
     ObjectInfo getObjectInfo(String bucket, String object);
 
     /**
-     * 获取桶文件签名url
+     * 获取桶文件分享url
      *
-     * @param bucket    桶
-     * @param objectKey 文件key
-     * @param expires   签名有效时间  单位秒
+     * @param bucketName 桶
+     * @param objectKey  文件key
+     * @param expires    签名有效时间  单位分
      * @return 文件签名地址
      */
-    String getSignedUrl(String bucket, String objectKey, int expires);
+    String getShareFiledUrl(String bucketName, String objectKey, int expires);
+
+    /**
+     * 获取直传文件put方式url
+     *
+     * @param bucketName 桶名
+     * @param dir        bucket下目录，开头不加/
+     * @param fileName   文件名包含路径
+     * @param expiry     过期时间，分
+     * @return
+     */
+    String getUploadFilePutUrl(String bucketName, String dir, String fileName, int expiry);
+
+    /**
+     * 获取直传文件post方式url
+     *
+     * @param bucketName 桶名
+     * @param dir        bucket下目录，开头不加/
+     * @param fileName   文件名
+     * @param expiry     过期时间 单位分
+     * @return
+     */
+    Map<String, String> getUploadFilePostUrl(String bucketName, String dir, String fileName, int expiry);
+
 
     /**
      * 获取文件对象标签

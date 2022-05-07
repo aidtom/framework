@@ -1,11 +1,11 @@
 package com.aidtom.framework.minio.core;
 
+import cn.hutool.core.date.DateUtil;
 import com.aidtom.framework.minio.MinioAutoProperties;
 import com.aidtom.framework.minio.core.model.ObjectInfo;
 import com.aidtom.framework.minio.core.model.ObjectItem;
 import com.google.common.collect.Maps;
 import io.minio.*;
-import io.minio.errors.*;
 import io.minio.http.Method;
 import io.minio.messages.*;
 import lombok.RequiredArgsConstructor;
@@ -14,13 +14,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
 import java.io.*;
 import java.net.URL;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -303,14 +301,52 @@ public class MinioCoreImpl implements MinioCore {
     }
 
     @Override
-    public String getSignedUrl(String bucket, String objectKey, int expires) {
+    public String getShareFiledUrl(String bucket, String objectKey, int expires) {
         try {
             return minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
                     .method(Method.GET).bucket(bucket)
-                    .object(objectKey).expiry(expires)
+                    .object(objectKey)
+                    .expiry(expires, TimeUnit.MINUTES)
                     .build());
         } catch (Exception e) {
             throw new RuntimeException("获取签名文件Url异常.", e);
+        }
+    }
+
+
+    @Override
+    public String getUploadFilePutUrl(String bucketName, String dir, String fileName, int expiry) {
+        try {
+            return minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
+                    .method(Method.PUT)
+                    .bucket(bucketName)
+                    .object(dir + fileName)
+                    .expiry(expiry, TimeUnit.MINUTES)
+                    .build());
+        } catch (Exception e) {
+            throw new RuntimeException("获取签名上传文件Url异常.", e);
+        }
+    }
+
+    @Override
+    public Map<String, String> getUploadFilePostUrl(String bucketName, String dir, String fileName, int expiry) {
+        try {
+            String rootPath = StringUtils.EMPTY;
+            if (StringUtils.isNotBlank(dir)) {
+                rootPath = dir.endsWith("/") ? dir : dir + "/";
+            }
+            rootPath = rootPath + DateUtil.format(new Date(), "yyyyMMdd") + "/" + fileName;
+
+            PostPolicy policy = new PostPolicy(bucketName, ZonedDateTime.now().plusMinutes(expiry));
+            //设置一个参数key，值为上传对象的名称
+            policy.addEqualsCondition("key", rootPath);
+            //设置上传文件的大小 1kiB to 10MiB.
+            //policy.addContentLengthRangeCondition(1024, 10 * 1024 * 1024);
+            Map<String, String> map = minioClient.getPresignedPostFormData(policy);
+            map.put("key", rootPath);
+            return map;
+        } catch (Exception e) {
+            throw new RuntimeException("获取签名上传文件Url异常.", e);
         }
     }
 

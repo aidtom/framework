@@ -24,10 +24,10 @@ public class App {
 
     static {
         minioAutoProperties = new MinioAutoProperties();
-        minioAutoProperties.setUrl("");
+        minioAutoProperties.setUrl("http://127.0.0.1:9000");
         minioAutoProperties.setAccessKey("minioadmin");
         minioAutoProperties.setSecretKey("minioadmin");
-        minioAutoProperties.setBucket("test1");
+        minioAutoProperties.setBucket("test");
 
         log.info("开始初始化MinioClient, url为{}, accessKey为:{}", minioAutoProperties.getUrl(), minioAutoProperties.getAccessKey());
         minioClient = MinioClient
@@ -80,7 +80,10 @@ public class App {
         tags.put("test1", "测试");
         tags.put("pic", "图片");
 
-        //minioCore.putObjectTags("test1", "21_1650943870473.jpg", tags);
+        Map<String, String> map = minioCore.getUploadFilePostUrl("test", "pdf", "mdc.pdf", 5);
+        System.out.println(map);
+
+        //minioCore.putObjectTags("test", "20.jpg", tags);
 
 /*        Map<String, String> test1 = minioCore.getObjectTags("test1", "21_1650943870473.jpg");
         System.out.println(test1);*/
@@ -104,9 +107,6 @@ public class App {
         Optional.ofNullable(test).orElse(Collections.emptyList()).forEach(objectItem -> {
             System.out.println(objectItem.toString());
         });*/
-
-        minioCore.createBucket("test3");
-        minioCore.setBucketEncryption("test3");
     }
 
 
