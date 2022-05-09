@@ -1,5 +1,6 @@
 package com.aidtom.framework.minio.core;
 
+import com.aidtom.framework.minio.core.enums.BucketPolicyEnum;
 import com.aidtom.framework.minio.core.model.ObjectInfo;
 import com.aidtom.framework.minio.core.model.ObjectItem;
 import io.minio.messages.Bucket;
@@ -38,9 +39,9 @@ public interface MinioCore {
      * 设置文件桶的策略
      *
      * @param bucket
-     * @param policy
+     * @param bucketPolicyEnum
      */
-    void putBucketPolicy(String bucket, String policy);
+    void putBucketPolicy(String bucket, BucketPolicyEnum bucketPolicyEnum);
 
     /**
      * 文件文件桶的标签

@@ -2,6 +2,8 @@ package com.aidtom.framework.minio.core;
 
 import cn.hutool.core.date.DateUtil;
 import com.aidtom.framework.minio.MinioAutoProperties;
+import com.aidtom.framework.minio.core.constants.ConstantUtil;
+import com.aidtom.framework.minio.core.enums.BucketPolicyEnum;
 import com.aidtom.framework.minio.core.model.ObjectInfo;
 import com.aidtom.framework.minio.core.model.ObjectItem;
 import com.google.common.collect.Maps;
@@ -36,24 +38,6 @@ public class MinioCoreImpl implements MinioCore {
 
     //@Resource
     private final MinioAutoProperties minioAutoProperties;
-
-    /**
-     * 桶占位符
-     */
-    private static final String BUCKET_PARAM = "${bucket}";
-    /**
-     * bucket权限-只读
-     */
-    private static final String READ_ONLY = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Action\":[\"s3:GetBucketLocation\",\"s3:ListBucket\"],\"Resource\":[\"arn:aws:s3:::" + BUCKET_PARAM + "\"]},{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Action\":[\"s3:GetObject\"],\"Resource\":[\"arn:aws:s3:::" + BUCKET_PARAM + "/*\"]}]}";
-    /**
-     * bucket权限-只写
-     */
-    private static final String WRITE_ONLY = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Action\":[\"s3:GetBucketLocation\",\"s3:ListBucketMultipartUploads\"],\"Resource\":[\"arn:aws:s3:::" + BUCKET_PARAM + "\"]},{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Action\":[\"s3:AbortMultipartUpload\",\"s3:DeleteObject\",\"s3:ListMultipartUploadParts\",\"s3:PutObject\"],\"Resource\":[\"arn:aws:s3:::" + BUCKET_PARAM + "/*\"]}]}";
-    /**
-     * bucket权限-读写
-     */
-    private static final String READ_WRITE = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Action\":[\"s3:GetBucketLocation\",\"s3:ListBucket\",\"s3:ListBucketMultipartUploads\"],\"Resource\":[\"arn:aws:s3:::" + BUCKET_PARAM + "\"]},{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Action\":[\"s3:DeleteObject\",\"s3:GetObject\",\"s3:ListMultipartUploadParts\",\"s3:PutObject\",\"s3:AbortMultipartUpload\"],\"Resource\":[\"arn:aws:s3:::" + BUCKET_PARAM + "/*\"]}]}";
-
 
     @Override
     public Boolean bucketExists(String bucketName) {
@@ -103,17 +87,17 @@ public class MinioCoreImpl implements MinioCore {
     }
 
     @Override
-    public void putBucketPolicy(String bucket, String policy) {
+    public void putBucketPolicy(String bucketName, BucketPolicyEnum bucketPolicyEnum) {
         try {
-            switch (policy) {
-                case "read-only":
-                    minioClient.setBucketPolicy(SetBucketPolicyArgs.builder().bucket(bucket).config(READ_ONLY.replace(BUCKET_PARAM, bucket)).build());
+            switch (bucketPolicyEnum) {
+                case READ_ONLY:
+                    minioClient.setBucketPolicy(SetBucketPolicyArgs.builder().bucket(bucketName).config(BucketPolicyEnum.READ_ONLY.getAuthDetail().replace(ConstantUtil.BUCKET_PARAM, bucketName)).build());
                     break;
-                case "write-only":
-                    minioClient.setBucketPolicy(SetBucketPolicyArgs.builder().bucket(bucket).config(WRITE_ONLY.replace(BUCKET_PARAM, bucket)).build());
+                case WRITE_ONLY:
+                    minioClient.setBucketPolicy(SetBucketPolicyArgs.builder().bucket(bucketName).config(BucketPolicyEnum.WRITE_ONLY.getAuthDetail().replace(ConstantUtil.BUCKET_PARAM, bucketName)).build());
                     break;
-                case "read-write":
-                    minioClient.setBucketPolicy(SetBucketPolicyArgs.builder().bucket(bucket).config(READ_WRITE.replace(BUCKET_PARAM, bucket)).build());
+                case READ_WRITE:
+                    minioClient.setBucketPolicy(SetBucketPolicyArgs.builder().bucket(bucketName).config(BucketPolicyEnum.READ_WRITE.getAuthDetail().replace(ConstantUtil.BUCKET_PARAM, bucketName)).build());
                     break;
                 default:
                     break;
@@ -200,7 +184,6 @@ public class MinioCoreImpl implements MinioCore {
         try {
             minioClient.setObjectTags(SetObjectTagsArgs.builder().bucket(bucket).object(objectName).tags(tags).build());
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RuntimeException("设置对象标签异常", e);
         }
     }
