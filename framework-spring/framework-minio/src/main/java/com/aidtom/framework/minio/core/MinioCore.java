@@ -250,18 +250,18 @@ public interface MinioCore {
      * @param dir        bucket下目录，开头不加/
      * @param fileName   文件名包含路径
      * @param expiry     过期时间，分
-     * @return
+     * @return 返回待上传文件url，put方式，binary格式
      */
     String getUploadFilePutUrl(String bucketName, String dir, String fileName, int expiry);
 
     /**
-     * 获取直传文件post方式url
+     * 获取直传文件post方式的参数，url为：域名+ "/" + bucketName
      *
      * @param bucketName 桶名
      * @param dir        bucket下目录，开头不加/
      * @param fileName   文件名
      * @param expiry     过期时间 单位分
-     * @return
+     * @return 返回值作为post上传文件参数，form-data方式，增加file参数，对应待上传文件
      */
     Map<String, String> getUploadFilePostUrl(String bucketName, String dir, String fileName, int expiry);
 
