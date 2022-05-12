@@ -8,16 +8,20 @@ import com.aidtom.framework.minio.core.model.ObjectInfo;
 import com.aidtom.framework.minio.core.model.ObjectItem;
 import com.google.common.collect.Maps;
 import io.minio.*;
+import io.minio.errors.*;
 import io.minio.http.Method;
 import io.minio.messages.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.net.URL;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -384,8 +388,10 @@ public class MinioCoreImpl implements MinioCore {
     }
 
     @Override
-    public List<ObjectItem> getBucketObjects(String bucketName, String prefix, String startAfter, Integer max) {
+    public List<ObjectItem> listBucketObjects(String bucketName, Boolean recursive, String prefix, String startAfter, Integer max) {
         ListObjectsArgs.Builder bucket = ListObjectsArgs.builder().bucket(bucketName);
+        bucket.recursive(recursive);
+
         if (StringUtils.isNotBlank(prefix)) {
             bucket.prefix(prefix);
         }
@@ -492,6 +498,45 @@ public class MinioCoreImpl implements MinioCore {
             minioClient.deleteObjectTags(DeleteObjectTagsArgs.builder().bucket(bucketName).object(objectName).build());
         } catch (Exception e) {
             throw new RuntimeException("删除对象文件标签异常.", e);
+        }
+    }
+
+    @Override
+    public void composeObject(String originBucketName, String targetBucketName, String objectName) {
+        Iterable<Result<Item>> results = minioClient.listObjects(ListObjectsArgs.builder().bucket(originBucketName).recursive(true).build());
+        List<String> objectNameList = new ArrayList<>();
+        Optional.ofNullable(results).orElse(Collections.emptyList()).forEach(res -> {
+            try {
+                Item item = res.get();
+                objectNameList.add(item.objectName());
+            } catch (Exception e) {
+                log.error("composeObject error. ", e);
+            }
+        });
+
+        if (CollectionUtils.isEmpty(objectNameList)) {
+            throw new IllegalArgumentException(originBucketName + "桶中没有文件，请检查");
+        }
+
+        // 对文件名集合进行升序排序
+        //objectNameList.sort((o1, o2) -> Integer.parseInt(o2) > Integer.parseInt(o1) ? -1 : 1);
+        List<ComposeSource> sourceObjectList = objectNameList.stream()
+                .map(obj -> {
+                    return ComposeSource.builder()
+                            .bucket(originBucketName)
+                            .object(obj)
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        try {
+            minioClient.composeObject(ComposeObjectArgs.builder()
+                    .bucket(targetBucketName)
+                    .object(objectName)
+                    .sources(sourceObjectList)
+                    .build());
+        } catch (Exception e) {
+            throw new RuntimeException("文件合并异常.", e);
         }
     }
 

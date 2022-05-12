@@ -294,12 +294,13 @@ public interface MinioCore {
      * 获取桶下所有的对象
      *
      * @param bucketName 桶名
+     * @param recursive  是否递归查询
      * @param prefix     前缀
      * @param startAfter 后缀
      * @param max        最大数量
      * @return
      */
-    List<ObjectItem> getBucketObjects(String bucketName, String prefix, String startAfter, Integer max);
+    List<ObjectItem> listBucketObjects(String bucketName, Boolean recursive, String prefix, String startAfter, Integer max);
 
     /**
      * 根据bucketName获取信息
@@ -361,4 +362,13 @@ public interface MinioCore {
      * @param objectName
      */
     void deleteObjectTags(String bucketName, String objectName);
+
+    /**
+     * 文件合并，将分块文件组成一个新的文件
+     *
+     * @param originBucketName 分块文件所在的桶
+     * @param targetBucketName 合并文件生成文件所在的桶
+     * @param objectName       存储于桶中的对象名
+     */
+    void composeObject(String originBucketName, String targetBucketName, String objectName);
 }

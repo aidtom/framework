@@ -1,5 +1,6 @@
 package com.aidtom.framework.minio.demo;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import com.aidtom.framework.minio.MinioAutoProperties;
 import com.aidtom.framework.minio.core.MinioCore;
@@ -9,11 +10,11 @@ import io.minio.BucketExistsArgs;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
+import java.util.zip.Checksum;
 
 /**
  * demo
@@ -84,17 +85,16 @@ public class App {
         tags.put("test1", "测试");
         tags.put("pic", "图片");
 
-        try {
-            //test/pdf/20220507/mdc.pdf
-            InputStream inputStream = minioCore.getObject("test", "pdf/20220507/mdc.pdf");
-            //InputStream inputStream = minioCore.getObjectByUrl("http://10.254.50.6:9000/test/pdf/20220507/mdc.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=QTI34S8GT5KVG6MWCEN1%2F20220511%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220511T101900Z&X-Amz-Expires=604800&X-Amz-Security-Token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NLZXkiOiJRVEkzNFM4R1Q1S1ZHNk1XQ0VOMSIsImV4cCI6MTY1MjI2NzkyOCwicGFyZW50IjoibWluaW9hZG1pbiJ9.JMYc4Wi0g-HbvX_dngIii82yYObz6Lc-F4tUHo68skOOPZ8SKyClRCah6TsCDsSuqPZj8G1aLFqLx-RGjwtBmQ&X-Amz-SignedHeaders=host&versionId=null&X-Amz-Signature=4ba1f847dcc68db6cf721d224482193212cdfe26e6cac556ccebdede7166c8e9");
-            FileOutputStream outputStream = new FileOutputStream("/Users/tanghaihua/project/framework/framework-spring/framework-minio/src/main/java/com/aidtom/framework/minio/demo/mdc.pdf");
-            long copy = IoUtil.copy(inputStream, outputStream);
-            System.out.println(copy);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
+//        try {
+//            //test/pdf/20220507/mdc.pdf
+//            InputStream inputStream = minioCore.getObject("test", "pdf/20220507/mdc.pdf");
+//            //InputStream inputStream = minioCore.getObjectByUrl("http://10.254.50.6:9000/test/pdf/20220507/mdc.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=QTI34S8GT5KVG6MWCEN1%2F20220511%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220511T101900Z&X-Amz-Expires=604800&X-Amz-Security-Token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NLZXkiOiJRVEkzNFM4R1Q1S1ZHNk1XQ0VOMSIsImV4cCI6MTY1MjI2NzkyOCwicGFyZW50IjoibWluaW9hZG1pbiJ9.JMYc4Wi0g-HbvX_dngIii82yYObz6Lc-F4tUHo68skOOPZ8SKyClRCah6TsCDsSuqPZj8G1aLFqLx-RGjwtBmQ&X-Amz-SignedHeaders=host&versionId=null&X-Amz-Signature=4ba1f847dcc68db6cf721d224482193212cdfe26e6cac556ccebdede7166c8e9");
+//            FileOutputStream outputStream = new FileOutputStream("/Users/tanghaihua/project/framework/framework-spring/framework-minio/src/main/java/com/aidtom/framework/minio/demo/mdc.pdf");
+//            long copy = IoUtil.copy(inputStream, outputStream);
+//            System.out.println(copy);
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
 
 /*        Map<String, String> map = minioCore.getUploadFilePostUrl("test", "pdf", "mdc.pdf", 5);
         System.out.println(map);*/
