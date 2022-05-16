@@ -5,11 +5,13 @@ import cn.hutool.core.io.IoUtil;
 import com.aidtom.framework.minio.MinioAutoProperties;
 import com.aidtom.framework.minio.core.MinioCore;
 import com.aidtom.framework.minio.core.MinioCoreImpl;
+import com.aidtom.framework.minio.core.enums.ContentTypeEnum;
 import com.aidtom.framework.minio.core.model.ObjectItem;
 import io.minio.BucketExistsArgs;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -100,7 +102,31 @@ public class App {
         System.out.println(map);*/
 
         //minioCore.putObjectTags("test", "20.jpg", tags);
+        try {
+            /*File file = new File("/Users/tanghaihua/project/framework/framework-spring/framework-minio/src/main/resources/mdc.pptx");
+            long length = file.length();
+            System.out.println(length);
 
+            long mid = length / 2 == 0 ? length / 2 : length / 2 + 1;
+
+            System.out.println(mid);
+
+            FileOutputStream outputStream = new FileOutputStream("/Users/tanghaihua/project/framework/framework-spring/framework-minio/src/main/resources/out/" + 2 + ".pptx");
+            StreamUtils.copyRange(new FileInputStream(file), outputStream, mid, length);*/
+
+            /*File file = new File("/Users/tanghaihua/project/framework/framework-spring/framework-minio/src/main/resources/out/2.pptx");
+
+            minioCore.putObject("test3","2.pptx", new FileInputStream(file), ContentTypeEnum.PPTX.getContentType());*/
+
+            /*String test3 = minioCore.getUploadFilePutUrl("test3", "/split/", "2.pptx", 5);
+            System.out.println(test3);*/
+
+
+            minioCore.composeObject("test3", "test4", "merger/", "mdc.pptx");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 /*        Map<String, String> test1 = minioCore.getObjectTags("test1", "21_1650943870473.jpg");
         System.out.println(test1);*/
 

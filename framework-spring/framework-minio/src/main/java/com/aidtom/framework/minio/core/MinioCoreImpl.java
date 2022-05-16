@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -443,6 +444,10 @@ public class MinioCoreImpl implements MinioCore {
     @Override
     public void removeBucket(String bucketName) {
         try {
+            List<ObjectItem> objectItems = listBucketObjects(bucketName, true, null, null, null);
+            Optional.ofNullable(objectItems).orElse(Collections.emptyList()).forEach(objectItem -> {
+                removeObject(bucketName, objectItem.getObjectName());
+            });
             minioClient.removeBucket(RemoveBucketArgs.builder().bucket(bucketName).build());
         } catch (Exception e) {
             throw new RuntimeException("根据存储桶名称删除桶失败!", e);
@@ -502,7 +507,7 @@ public class MinioCoreImpl implements MinioCore {
     }
 
     @Override
-    public void composeObject(String originBucketName, String targetBucketName, String objectName) {
+    public void composeObject(String originBucketName, String targetBucketName, String targetDir, String objectName) {
         Iterable<Result<Item>> results = minioClient.listObjects(ListObjectsArgs.builder().bucket(originBucketName).recursive(true).build());
         List<String> objectNameList = new ArrayList<>();
         Optional.ofNullable(results).orElse(Collections.emptyList()).forEach(res -> {
@@ -532,9 +537,12 @@ public class MinioCoreImpl implements MinioCore {
         try {
             minioClient.composeObject(ComposeObjectArgs.builder()
                     .bucket(targetBucketName)
-                    .object(objectName)
+                    .object(targetDir + objectName)
                     .sources(sourceObjectList)
                     .build());
+
+            //合并成功后，删除临时通
+            removeBucket(originBucketName);
         } catch (Exception e) {
             throw new RuntimeException("文件合并异常.", e);
         }

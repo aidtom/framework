@@ -368,7 +368,8 @@ public interface MinioCore {
      *
      * @param originBucketName 分块文件所在的桶
      * @param targetBucketName 合并文件生成文件所在的桶
+     * @param targetDir        合并文件生成文件所在的文件件
      * @param objectName       存储于桶中的对象名
      */
-    void composeObject(String originBucketName, String targetBucketName, String objectName);
+    void composeObject(String originBucketName, String targetBucketName, String targetDir, String objectName);
 }
